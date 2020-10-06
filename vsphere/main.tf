@@ -13,7 +13,7 @@ data "vsphere_datacenter" "dc" {
 
 data "vsphere_compute_cluster" "compute_cluster" {
   name          = "LAB-V2"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_datastore" "datastore" {
@@ -33,7 +33,9 @@ resource "vsphere_virtual_machine" "vm" {
   num_cpus = 2
   memory   = 1024
   guest_id = "rhel6Guest"
-
+  wait_for_guest_net_routable = false
+  wait_for_guest_net_timeout = 0
+  wait_for_guest_ip_timeout = 0
   network_interface {
     network_id = data.vsphere_network.network.id
   }
