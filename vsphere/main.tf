@@ -1,38 +1,33 @@
 provider "vsphere" {
-  #user           = var.vsphere_user
-  #password       = var.vsphere_password
-  #vsphere_server = var.vsphere_server
-
-  # If you have a self-signed cert
   allow_unverified_ssl = true
 }
 
 data "vsphere_datacenter" "dc" {
-  name = "Main"
+  name = var.datacenter_name
 }
 
 data "vsphere_compute_cluster" "compute_cluster" {
-  name          = "LAB-V2"
+  name          = var.cluster_name
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_datastore" "datastore" {
-  name          = "vsanDatastore"
+  name          = var.datastore_name
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_network" "network" {
-  name          = "ls_dan_tkg_lab"
+  name          = var.network_name
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name             = "terraform-test"
+  name             = var.vm_name
   datastore_id     = data.vsphere_datastore.datastore.id
   resource_pool_id = data.vsphere_compute_cluster.compute_cluster.resource_pool_id
-  num_cpus = 2
-  memory   = 1024
-  guest_id = "rhel6Guest"
+  num_cpus = var.cpu_count
+  memory   = var.memory_mb
+  guest_id = var.guest_os_id
   wait_for_guest_net_routable = false
   wait_for_guest_net_timeout = 0
   wait_for_guest_ip_timeout = 0
@@ -42,6 +37,6 @@ resource "vsphere_virtual_machine" "vm" {
 
   disk {
     label = "disk0"
-    size  = 20
+    size  = var.disk_gb
   }
 }
