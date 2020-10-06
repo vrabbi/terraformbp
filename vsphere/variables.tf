@@ -1,0 +1,9 @@
+variable "datacenter_name" {}
+variable "cluster_name" {}
+variable "datastore_name" {}
+variable "network_name" {}
+variable "vm_name" {}
+variable "cpu_count" {}
+variable "memory_mb" {}
+variable "guest_os_id" {}
+variable "disk_gb" {}
