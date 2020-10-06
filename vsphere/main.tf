@@ -11,6 +11,11 @@ data "vsphere_datacenter" "dc" {
   name = "Main"
 }
 
+data "vsphere_compute_cluster" "compute_cluster" {
+  name          = "LAB-V2"
+  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+}
+
 data "vsphere_datastore" "datastore" {
   name          = "vsanDatastore"
   datacenter_id = data.vsphere_datacenter.dc.id
@@ -24,7 +29,7 @@ data "vsphere_network" "network" {
 resource "vsphere_virtual_machine" "vm" {
   name             = "terraform-test"
   datastore_id     = data.vsphere_datastore.datastore.id
-
+  resource_pool_id = data.vsphere_compute_cluster.compute_cluster.resource_pool_id
   num_cpus = 2
   memory   = 1024
   guest_id = "Ubuntu-test"
